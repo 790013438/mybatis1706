@@ -9,6 +9,22 @@
 		<result property="password" column="userpass"/>
 		<result property="email" column="email" />
 	</resultMap>
+	
+	<delete id="deleteById">
+		delete from tb_user where userid=#{id}
+	</delete>
+	
+	<delete id="delete" parameterType="user">
+		delete from tb_user where userid=#{id}
+	</delete>
+
+	<update id="update" parameterType="user">
+		update tb_user set 
+			username=#{username}, 
+			userpass=#{password},
+			email=#{email}
+		where userid=#{id}
+	</update>
 
 	<insert id="save" parameterType="user">
 		insert into tb_user (username, userpass, email) 
