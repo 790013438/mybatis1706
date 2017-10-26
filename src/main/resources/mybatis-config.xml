@@ -5,6 +5,7 @@
 	<!-- 配置类型别名 -->
 	<typeAliases>
 		<typeAlias alias="user" type="com.qfedu.domain.User" />
+		<typeAlias alias="account" type="com.qfedu.domain.Account" />
 		<!-- <package name="com.qfedu.domain" /> -->
 	</typeAliases>
 	<!-- 配置JDBC相关环境 -->
@@ -22,5 +23,6 @@
 	<!-- 映射器XML文件位置 -->
 	<mappers>
 		<mapper class="com.qfedu.mapper.UserMapper" />
+		<mapper class="com.qfedu.mapper.AccountMapper" />
 	</mappers>
 </configuration>

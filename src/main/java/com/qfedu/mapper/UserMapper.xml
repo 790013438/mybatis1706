@@ -31,7 +31,7 @@
 		values (#{username}, #{password}, #{email}) 
 	</insert>
 	
-	<select id="findById" resultMap="userResultMap">
+	<select id="findById" parameterType="int" resultMap="userResultMap">
 		select userid, username, userpass, email 
 		from tb_user
 		where userid=#{id}		

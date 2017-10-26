@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qfedu.mapper.AccountMapper">
+	
+	<resultMap type="user" id="userResultMap">
+		<id property="id" column="userid"/>
+		<result property="username" column="username" />
+		<result property="password" column="userpass"/>
+		<result property="email" column="email" />
+	</resultMap>
+
+	<resultMap type="account" id="accountResultMap">
+		<id property="id" column="accid"/>
+		<result property="number" column="number" />
+		<result property="balance" column="balance"/>
+		<association property="user" column="userid" resultMap="userResultMap" />
+	</resultMap>
+
+	<insert id="save" parameterType="account">
+		insert into tb_account 
+		values (default, #{number}, #{balance}, #{user.id})
+	</insert>
+	
+	<select id="findById" resultMap="accountResultMap">
+		select accid, number, balance, t1.userid, username, userpass, email
+		from tb_account as t1
+		left outer join tb_user as t2 
+		on t1.userid=t2.userid 
+		where accid=#{id}
+	</select>
+	
+</mapper>
