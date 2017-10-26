@@ -3,12 +3,51 @@
 		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qfedu.mapper.UserMapper">
 
+	<resultMap type="account" id="accountResultMap">
+		<id property="id" column="accid"/>
+		<result property="number" column="number" />
+		<result property="balance" column="balance"/>
+	</resultMap>
+
 	<resultMap type="user" id="userResultMap">
 		<id property="id" column="userid"/>
 		<result property="username" column="username" />
 		<result property="password" column="userpass"/>
 		<result property="email" column="email" />
+		<collection property="accounts" resultMap="accountResultMap" />
+		<!-- <collection property="accounts" column="userid" select="findAccountByUserId"/> -->
 	</resultMap>
+	
+	<!-- 此种做法可以使用延迟加载来减少内存的开销但是会产生1+N查询问题 -->
+	<!-- 
+	<select id="findAccountByUserId" resultMap="accountResultMap">
+		select accid, number, balance 
+		from tb_account 
+		where userid=#{id}
+	</select>
+	-->
+	
+	<select id="findByParam" parameterType="map" resultMap="userResultMap">
+		select userid, username, userpass, email 
+		from tb_user 
+		<where>
+			<if test="userid != null">
+				and userid=#{userid}
+			</if>
+			<if test="usernameList != null">
+				or username in
+				<foreach collection="usernameList" item="foo" open="(" close=")" separator=",">
+					#{foo}
+				</foreach>
+			</if>
+			<if test="password != null">
+				and userpass=#{password}
+			</if>
+			<if test="email != null">
+				and email=#{email}
+			</if>
+		</where>
+	</select>
 	
 	<delete id="deleteById">
 		delete from tb_user where userid=#{id}
@@ -32,9 +71,11 @@
 	</insert>
 	
 	<select id="findById" parameterType="int" resultMap="userResultMap">
-		select userid, username, userpass, email 
-		from tb_user
-		where userid=#{id}		
+		select t1.userid, username, userpass, email, accid, number, balance
+		from tb_user as t1
+		left outer join tb_account as t2
+		on t1.userid=t2.userid
+		where t1.userid=#{id}
 	</select>
 	
 	<select id="findByUsername" resultMap="userResultMap">
